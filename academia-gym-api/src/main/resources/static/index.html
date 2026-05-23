@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GYM - Sistema de Academia</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <header class="topo">
+    <div>
+      <p class="tag">Laboratório de Banco de Dados</p>
+      <h1>Sistema de Gerenciamento de Academia</h1>
+      <p class="descricao">Frontend simples em HTML, CSS e JavaScript consumindo a API.</p>
+    </div>
+    <div class="status-api">
+      <span id="statusApiBolinha" class="bolinha"></span>
+      <span id="statusApiTexto">Verificando API...</span>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="cards-resumo">
+      <article class="card-resumo">
+        <span>Alunos</span>
+        <strong id="totalAlunos">0</strong>
+      </article>
+      <article class="card-resumo">
+        <span>Planos</span>
+        <strong id="totalPlanos">0</strong>
+      </article>
+      <article class="card-resumo">
+        <span>Matrículas</span>
+        <strong id="totalMatriculas">0</strong>
+      </article>
+      <article class="card-resumo alerta">
+        <span>Inadimplências pendentes</span>
+        <strong id="totalInadimplencias">0</strong>
+      </article>
+    </section>
+
+    <nav class="abas" aria-label="Navegação principal">
+      <button class="aba ativa" data-alvo="alunos">Alunos</button>
+      <button class="aba" data-alvo="modalidades">Modalidades</button>
+      <button class="aba" data-alvo="professores">Professores</button>
+      <button class="aba" data-alvo="planos">Planos</button>
+      <button class="aba" data-alvo="matriculas">Matrículas</button>
+      <button class="aba" data-alvo="pagamentos">Pagamentos</button>
+      <button class="aba" data-alvo="relatorios">Relatórios</button>
+    </nav>
+
+    <div id="mensagem" class="mensagem oculto"></div>
+
+    <section id="alunos" class="secao ativa">
+      <div class="cabecalho-secao">
+        <div>
+          <h2>Cadastro de alunos</h2>
+          <p>Registre e consulte os alunos da academia.</p>
+        </div>
+        <button class="botao secundario" type="button" onclick="carregarAlunos()">Atualizar lista</button>
+      </div>
+
+      <form id="formAluno" class="form-grid">
+        <input type="hidden" name="id" />
+        <label>Nome
+          <input name="nome" type="text" placeholder="Ex.: Ana Souza" required />
+        </label>
+        <label>CPF
+          <input name="cpf" type="text" placeholder="Somente números" required />
+        </label>
+        <label>E-mail
+          <input name="email" type="email" placeholder="email@exemplo.com" required />
+        </label>
+        <label>Telefone
+          <input name="telefone" type="text" placeholder="(62) 99999-0000" />
+        </label>
+        <label>Data de nascimento
+          <input name="dataNascimento" type="date" />
+        </label>
+        <label>Sexo
+          <select name="sexo">
+            <option value="">Selecione</option>
+            <option value="FEMININO">Feminino</option>
+            <option value="MASCULINO">Masculino</option>
+            <option value="OUTRO">Outro</option>
+          </select>
+        </label>
+        <label class="campo-largo">Endereço
+          <input name="endereco" type="text" placeholder="Rua, número, bairro" />
+        </label>
+        <div class="acoes-form">
+          <button class="botao" type="submit">Salvar aluno</button>
+          <button class="botao secundario" type="button" onclick="limparFormulario('formAluno')">Limpar</button>
+        </div>
+      </form>
+
+      <div class="busca">
+        <input id="buscaAluno" type="text" placeholder="Buscar aluno por nome" />
+        <button class="botao secundario" type="button" onclick="buscarAlunoPorNome()">Buscar</button>
+        <button class="botao secundario" type="button" onclick="carregarAlunos()">Mostrar todos</button>
+      </div>
+
+      <div id="tabelaAlunos" class="tabela-wrapper"></div>
+    </section>
+
+    <section id="modalidades" class="secao">
+      <div class="cabecalho-secao">
+        <div>
+          <h2>Modalidades</h2>
+          <p>Cadastre as modalidades oferecidas pela academia.</p>
+        </div>
+        <button class="botao secundario" type="button" onclick="carregarModalidades()">Atualizar lista</button>
+      </div>
+
+      <form id="formModalidade" class="form-grid simples">
+        <input type="hidden" name="id" />
+        <label>Nome
+          <input name="nome" type="text" placeholder="Ex.: Musculação" required />
+        </label>
+        <label>Descrição
+          <input name="descricao" type="text" placeholder="Descrição da modalidade" />
+        </label>
+        <div class="acoes-form">
+          <button class="botao" type="submit">Salvar modalidade</button>
+          <button class="botao secundario" type="button" onclick="limparFormulario('formModalidade')">Limpar</button>
+        </div>
+      </form>
+
+      <div id="tabelaModalidades" class="tabela-wrapper"></div>
+    </section>
+
+    <section id="professores" class="secao">
+      <div class="cabecalho-secao">
+        <div>
+          <h2>Professores</h2>
+          <p>Cadastre professores e vincule cada um a uma modalidade.</p>
+        </div>
+        <button class="botao secundario" type="button" onclick="carregarProfessores()">Atualizar lista</button>
+      </div>
+
+      <form id="formProfessor" class="form-grid">
+        <input type="hidden" name="id" />
+        <label>Nome
+          <input name="nome" type="text" placeholder="Ex.: Carlos Lima" required />
+        </label>
+        <label>E-mail
+          <input name="email" type="email" placeholder="professor@email.com" required />
+        </label>
+        <label>Telefone
+          <input name="telefone" type="text" placeholder="(62) 98888-7777" />
+        </label>
+        <label>Modalidade
+          <select name="modalidadeId" id="selectModalidadeProfessor" required></select>
+        </label>
+        <div class="acoes-form">
+          <button class="botao" type="submit">Salvar professor</button>
+          <button class="botao secundario" type="button" onclick="limparFormulario('formProfessor')">Limpar</button>
+        </div>
+      </form>
+
+      <div id="tabelaProfessores" class="tabela-wrapper"></div>
+    </section>
+
+    <section id="planos" class="secao">
+      <div class="cabecalho-secao">
+        <div>
+          <h2>Planos</h2>
+          <p>Cadastre planos com duração em dias e valor.</p>
+        </div>
+        <button class="botao secundario" type="button" onclick="carregarPlanos()">Atualizar lista</button>
+      </div>
+
+      <form id="formPlano" class="form-grid simples">
+        <input type="hidden" name="id" />
+        <label>Nome
+          <input name="nome" type="text" placeholder="Ex.: Mensal" required />
+        </label>
+        <label>Duração em dias
+          <input name="duracaoDias" type="number" min="1" placeholder="30" required />
+        </label>
+        <label>Valor
+          <input name="valor" type="number" step="0.01" min="0" placeholder="99.90" required />
+        </label>
+        <div class="acoes-form">
+          <button class="botao" type="submit">Salvar plano</button>
+          <button class="botao secundario" type="button" onclick="limparFormulario('formPlano')">Limpar</button>
+        </div>
+      </form>
+
+      <div id="tabelaPlanos" class="tabela-wrapper"></div>
+    </section>
+
+    <section id="matriculas" class="secao">
+      <div class="cabecalho-secao">
+        <div>
+          <h2>Matrículas</h2>
+          <p>Vincule um aluno a um plano. A API chama a procedure do banco para registrar a matrícula e o pagamento inicial.</p>
+        </div>
+        <div class="grupo-botoes">
+          <button class="botao secundario" type="button" onclick="verificarMatriculasVencidas()">Verificar vencidas</button>
+          <button class="botao secundario" type="button" onclick="carregarMatriculas()">Atualizar lista</button>
+        </div>
+      </div>
+
+      <form id="formMatricula" class="form-grid simples">
+        <label>Aluno
+          <select name="alunoId" id="selectAlunoMatricula" required></select>
+        </label>
+        <label>Plano
+          <select name="planoId" id="selectPlanoMatricula" required></select>
+        </label>
+        <label>Forma de pagamento
+          <select name="formaPagamento" required>
+            <option value="PIX">PIX</option>
+            <option value="CARTAO">Cartão</option>
+            <option value="DINHEIRO">Dinheiro</option>
+            <option value="BOLETO">Boleto</option>
+          </select>
+        </label>
+        <div class="acoes-form">
+          <button class="botao" type="submit">Criar matrícula</button>
+        </div>
+      </form>
+
+      <div class="busca">
+        <select id="filtroStatusMatricula">
+          <option value="">Todos os status</option>
+          <option value="ATIVA">Ativas</option>
+          <option value="VENCIDA">Vencidas</option>
+          <option value="CANCELADA">Canceladas</option>
+        </select>
+        <button class="botao secundario" type="button" onclick="carregarMatriculas()">Filtrar</button>
+      </div>
+
+      <div id="tabelaMatriculas" class="tabela-wrapper"></div>
+    </section>
+
+    <section id="pagamentos" class="secao">
+      <div class="cabecalho-secao">
+        <div>
+          <h2>Pagamentos</h2>
+          <p>Registre pagamentos de mensalidades para uma matrícula.</p>
+        </div>
+        <button class="botao secundario" type="button" onclick="carregarPagamentos()">Atualizar lista</button>
+      </div>
+
+      <form id="formPagamento" class="form-grid simples">
+        <label>Matrícula
+          <select name="matriculaId" id="selectMatriculaPagamento" required></select>
+        </label>
+        <label>Valor
+          <input name="valor" type="number" step="0.01" min="0" placeholder="99.90" required />
+        </label>
+        <label>Forma de pagamento
+          <select name="formaPagamento" required>
+            <option value="PIX">PIX</option>
+            <option value="CARTAO">Cartão</option>
+            <option value="DINHEIRO">Dinheiro</option>
+            <option value="BOLETO">Boleto</option>
+          </select>
+        </label>
+        <label>Status
+          <select name="status" required>
+            <option value="PAGO">Pago</option>
+            <option value="PENDENTE">Pendente</option>
+            <option value="CANCELADO">Cancelado</option>
+          </select>
+        </label>
+        <div class="acoes-form">
+          <button class="botao" type="submit">Registrar pagamento</button>
+        </div>
+      </form>
+
+      <div id="tabelaPagamentos" class="tabela-wrapper"></div>
+    </section>
+
+    <section id="relatorios" class="secao">
+      <div class="cabecalho-secao">
+        <div>
+          <h2>Relatórios</h2>
+          <p>Consulta das views e informações úteis para apresentação do trabalho.</p>
+        </div>
+        <button class="botao secundario" type="button" onclick="carregarRelatorios()">Atualizar relatórios</button>
+      </div>
+
+      <div class="grid-relatorios">
+        <article class="painel-relatorio">
+          <h3>Alunos ativos</h3>
+          <div id="tabelaRelatorioAlunosAtivos" class="tabela-wrapper"></div>
+        </article>
+        <article class="painel-relatorio">
+          <h3>Inadimplências pendentes</h3>
+          <div id="tabelaRelatorioInadimplencias" class="tabela-wrapper"></div>
+        </article>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
