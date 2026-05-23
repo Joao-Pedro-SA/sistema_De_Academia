@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: GYM
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/academia_db?useSSL=false&serverTimezone=America/Sao_Paulo&allowPublicKeyRetrieval=true
+    username: acad_admin
+    password: admin123
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+server:
+  port: 8080
